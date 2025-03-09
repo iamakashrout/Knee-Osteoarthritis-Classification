@@ -54,7 +54,7 @@ st.set_page_config(
 class_names = ["Healthy", "Doubtful", "Minimal", "Moderate", "Severe"]
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-model_path = os.path.join(BASE_DIR, "src", "models", "Xception_model.keras")
+model_path = os.path.join(BASE_DIR, "src", "models", "Xception_model_softmax.keras")
 model = tf.keras.models.load_model(model_path)
 target_size = (224, 224)
 
