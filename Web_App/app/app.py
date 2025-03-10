@@ -4,7 +4,7 @@ import numpy as np
 import streamlit as st
 import tensorflow as tf
 from PIL import Image
-
+import os
 
 def make_gradcam_heatmap(grad_model, img_array, pred_index=None):
     with tf.GradientTape() as tape:
@@ -45,7 +45,7 @@ def save_and_display_gradcam(img, heatmap, alpha=0.4):
     return superimposed_img
 
 
-icon = Image.open("app/img/logo.png")
+icon = Image.open("./img/logo.png")
 st.set_page_config(
     page_title="Severity Analysis of Arthrosis in the Knee",
     page_icon=icon,
@@ -53,7 +53,9 @@ st.set_page_config(
 
 class_names = ["Healthy", "Doubtful", "Minimal", "Moderate", "Severe"]
 
-model = tf.keras.models.load_model("./src/models/model_Xception_C_ft.hdf5")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+model_path = os.path.join(BASE_DIR, "src", "models", "Xception_model_softmax.keras")
+model = tf.keras.models.load_model(model_path)
 target_size = (224, 224)
 
 # Grad-CAM
@@ -87,7 +89,7 @@ y_pred = None
 if uploaded_file is not None:
     with col1:
         st.subheader(":camera: Input")
-        st.image(uploaded_file, use_column_width=True)
+        st.image(uploaded_file, use_container_width=True)
 
         img = tf.keras.preprocessing.image.load_img(
             uploaded_file, target_size=target_size
@@ -125,7 +127,7 @@ if uploaded_file is not None:
             st.subheader(":mag: Explainability")
             heatmap = make_gradcam_heatmap(grad_model, img_array)
             image = save_and_display_gradcam(img, heatmap)
-            st.image(image, use_column_width=True)
+            st.image(image, use_container_width=True)
 
             st.subheader(":bar_chart: Analysis")
 
